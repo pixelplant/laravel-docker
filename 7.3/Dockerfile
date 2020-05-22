@@ -44,6 +44,12 @@ RUN pecl install \
 RUN docker-php-ext-enable \
     imagick \
     xdebug
+	
+# Install phraseapp
+RUN cd /usr/local/bin \
+    wget https://github.com/phrase/phraseapp-client/releases/download/1.17.1/phraseapp_linux_amd64 \
+    mv phraseapp_linux_amd64 phraseapp \
+    chmod +x phraseapp
 
 # Configure php extensions
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
