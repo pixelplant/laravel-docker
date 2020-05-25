@@ -46,10 +46,13 @@ RUN docker-php-ext-enable \
     xdebug
 	
 # Install phraseapp
-RUN cd /usr/local/bin \
-    wget https://github.com/phrase/phraseapp-client/releases/download/1.17.1/phraseapp_linux_amd64 \
-    mv phraseapp_linux_amd64 phraseapp \
-    chmod +x phraseapp
+ENV PHRASEAPP_VERSION 1.17.1
+RUN set -ex \
+        && apk add --no-cache --virtual .phraseapp-build \
+                curl \
+        && curl -fSL -o /usr/local/bin/phraseapp "https://github.com/phrase/phraseapp-client/releases/download/${PHRASEAPP_VERSION}/phraseapp_linux_amd64" \
+        && chmod +x /usr/local/bin/phraseapp \
+	&& apk del .phraseapp-build
 
 # Configure php extensions
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
