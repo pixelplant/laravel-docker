@@ -52,7 +52,7 @@ RUN set -ex \
     curl \
     && curl -fSL -o /usr/local/bin/phraseapp "https://github.com/phrase/phraseapp-client/releases/download/${PHRASEAPP_VERSION}/phraseapp_linux_amd64" \
     && chmod +x /usr/local/bin/phraseapp \
-	&& apk del .phraseapp-build
+    && apk del .phraseapp-build
 
 # Configure php extensions
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
