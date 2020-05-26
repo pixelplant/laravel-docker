@@ -56,10 +56,7 @@ RUN set -ex \
     && apk del .phraseapp-build
 	
 # Lighthouse
-RUN apt-get install -y \
-    nodejs \
-    npm \
-    && apt-get install \
+RUN apk add \
     chromium-browser \
     xvfb \
     && npm i -g lighthouse
