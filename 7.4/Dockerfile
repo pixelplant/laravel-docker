@@ -56,8 +56,8 @@ RUN set -ex \
     && apk del .phraseapp-build
 	
 # Lighthouse
-RUN apk add \
-    chromium-browser \
+RUN apk add --no-cache \
+    chromium \
     xvfb \
     && npm i -g lighthouse
 
