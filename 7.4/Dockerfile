@@ -54,6 +54,15 @@ RUN set -ex \
     && curl -fSL -o /usr/local/bin/phraseapp "https://github.com/phrase/phraseapp-client/releases/download/${PHRASEAPP_VERSION}/phraseapp_linux_amd64" \
     && chmod +x /usr/local/bin/phraseapp \
     && apk del .phraseapp-build
+	
+# Lighthouse
+RUN apt-get install -y \
+    nodejs \
+    npm \
+    && apt-get install \
+    chromium-browser \
+    xvfb \
+    && npm i -g lighthouse
 
 # Configure php extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
