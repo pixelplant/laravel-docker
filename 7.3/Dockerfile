@@ -55,8 +55,8 @@ RUN set -ex \
     && apk del .phraseapp-build
 	
 # Lighthouse
-RUN apk add \
-    chromium-browser \
+RUN apk add --no-cache \
+    chromium \
     xvfb \
     && npm i -g lighthouse
 
@@ -81,6 +81,7 @@ RUN docker-php-ext-install \
     pcntl \
     tokenizer \
     xml \
+	sockets \
     zip
 
 # Install composer

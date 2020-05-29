@@ -81,6 +81,7 @@ RUN docker-php-ext-install \
     pcntl \
     tokenizer \
     xml \
+	sockets \
     zip
 
 # Install composer
