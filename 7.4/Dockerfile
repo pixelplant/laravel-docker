@@ -46,14 +46,15 @@ RUN docker-php-ext-enable \
     imagick \
     xdebug
 	
-# Install phraseapp
-ENV PHRASEAPP_VERSION 1.17.1
-RUN set -ex \
-    && apk add --no-cache --virtual .phraseapp-build \
-    curl \
-    && curl -fSL -o /usr/local/bin/phraseapp "https://github.com/phrase/phraseapp-client/releases/download/${PHRASEAPP_VERSION}/phraseapp_linux_amd64" \
-    && chmod +x /usr/local/bin/phraseapp \
-    && apk del .phraseapp-build
+# Install Selenium
+RUN apk add openjdk11
+RUN apk add --no-cache \
+	chromium chromium-chromedriver
+RUN wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar \
+	&& mv -f selenium-server-standalone-3.141.59.jar /usr/local/bin/selenium-server-standalone.jar \
+	&& chown root:root /usr/local/bin/selenium-server-standalone.jar \
+	&& chmod 0755 /usr/local/bin/selenium-server-standalone.jar
+
 	
 # Lighthouse
 RUN apk add --no-cache \
