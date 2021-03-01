@@ -33,7 +33,8 @@ RUN apk add --no-cache \
     openssh-client \
     postgresql-libs \
     rsync \
-    zlib-dev
+    zlib-dev \
+	postgresql-client
 
 # Install PECL and PEAR extensions
 RUN pecl install \
@@ -77,6 +78,7 @@ RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
     pdo_pgsql \
+	pgsql \
     pdo_sqlite \
     pcntl \
     tokenizer \
