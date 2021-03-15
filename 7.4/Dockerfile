@@ -34,7 +34,9 @@ RUN apk add --no-cache \
     openssh-client \
     postgresql-libs \
     rsync \
-    zlib-dev
+    zlib-dev \
+	postgresql \
+	postgresql-contrib
 
 # Install PECL and PEAR extensions
 RUN pecl install \
@@ -104,7 +106,22 @@ RUN curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/
 RUN composer global require "squizlabs/php_codesniffer=*"
 
 # Cleanup dev dependencies
-RUN apk del -f .build-deps
+RUN apk del -f .build-deps \
+	&& mkdir -p /run/postgresql/ \
+	&& chown -R postgres:postgres /run/postgresql/
 
 # Setup working directory
 WORKDIR /var/www
+
+USER postgres
+
+RUN mkdir -p /var/lib/postgresql/data &&\
+	chmod 0700 /var/lib/postgresql/data &&\
+	initdb /var/lib/postgresql/data &&\
+	echo "host all  all    127.0.0.1/32  md5" >> /var/lib/postgresql/data/pg_hba.conf &&\
+    echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf &&\
+    pg_ctl start -D /var/lib/postgresql/data &&\
+    psql --command "CREATE USER homestead WITH SUPERUSER PASSWORD 'secret';" &&\
+    createdb -O homestead neho_test
+	
+USER root

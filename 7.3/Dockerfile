@@ -34,7 +34,9 @@ RUN apk add --no-cache \
     postgresql-libs \
     rsync \
     zlib-dev \
-	postgresql-client
+	postgresql-client \
+	postgresql \
+	postgresql-contrib
 
 # Install PECL and PEAR extensions
 RUN pecl install \
@@ -108,3 +110,16 @@ RUN apk del -f .build-deps
 
 # Setup working directory
 WORKDIR /var/www
+
+USER postgres
+
+RUN mkdir -p /var/lib/postgresql/data &&\
+	chmod 0700 /var/lib/postgresql/data &&\
+	initdb /var/lib/postgresql/data &&\
+	echo "host all  all    127.0.0.1/32  md5" >> /var/lib/postgresql/data/pg_hba.conf &&\
+    echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf &&\
+    pg_ctl start -D /var/lib/postgresql/data &&\
+    psql --command "CREATE USER homestead WITH SUPERUSER PASSWORD 'secret';" &&\
+    createdb -O homestead neho_test
+	
+USER root
