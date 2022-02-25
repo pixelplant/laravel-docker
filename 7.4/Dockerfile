@@ -1,125 +1,96 @@
-FROM php:7.4-alpine
+FROM ubuntu:20.04
 
-# Install dev dependencies
-RUN apk add --no-cache --virtual .build-deps \
-    $PHPIZE_DEPS \
-    curl-dev \
-    imagemagick-dev \
-    libtool \
-    libxml2-dev \
-    postgresql-dev \
-    sqlite-dev
+RUN apt-get update && apt-get install -y \
+  openssl \
+  php7.4-cli
 
-# Install production dependencies
-RUN apk add --no-cache \
-    bash \
-    curl \
-    freetype-dev \
-    g++ \
-    gcc \
-    git \
-    icu-dev \
-    icu-libs \
-    imagemagick \
-    libc-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
-    libzip-dev \
-    make \
-    mysql-client \
-    nodejs \
-    nodejs-npm \
-    oniguruma-dev \
-    yarn \
-    openssh-client \
-    postgresql-libs \
-    rsync \
-    zlib-dev \
-	postgresql \
-	postgresql-contrib
+RUN apt-get update \
+  && apt-get install -y -f apt-transport-https \
+		libicu-dev \
+		libjpeg-dev \
+		libfreetype6-dev \
+		libonig-dev \
+		libpng-dev \
+		libpq-dev \
+		libwebp-dev \
+		libxml2-dev \
+		libzip-dev \
+		acl \
+		cron \
+		git \
+		zip \
+        curl \
+        libcurl4-openssl-dev
 
-# Install PECL and PEAR extensions
-RUN pecl install \
-    imagick
+# Install node 16 and npm 8
+RUN curl -s https://deb.nodesource.com/setup_16.x | bash && apt-get install nodejs -y
+
+RUN apt-get update && apt-get install -y \
+        php7.4-bcmath \
+        php7.4-calendar \
+        php7.4-curl \
+        php7.4-exif \
+        php7.4-gd \
+        php7.4-iconv \
+        php7.4-intl \
+        php7.4-mbstring \
+        php7.4-pdo \
+        php7.4-pdo-pgsql \
+        php7.4-pgsql \
+        php7.4-tokenizer \
+        php7.4-xml \
+        php7.4-sockets \
+        php7.4-zip
+
+RUN curl -sS https://getcomposer.org/installer | php \
+	&& mv composer.phar /usr/local/bin/composer \
+	&& composer self-update        
 
 # Enable PECL and PEAR extensions
-RUN docker-php-ext-enable \
-    imagick
+#RUN docker-php-ext-enable \
+#    imagick
 	
 # Install Selenium
-RUN apk add openjdk11
-RUN apk add --no-cache \
-	chromium chromium-chromedriver
+RUN apt-get update && apt-get install -y default-jre
+RUN apt-get update && apt-get install -y chromium-driver wget 
+
+#RUN npm install chromedriver
 RUN wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar \
 	&& mv -f selenium-server-standalone-3.141.59.jar /usr/local/bin/selenium-server-standalone.jar \
 	&& chown root:root /usr/local/bin/selenium-server-standalone.jar \
 	&& chmod 0755 /usr/local/bin/selenium-server-standalone.jar
 
+#java -Dwebdriver.chrome.driver="/usr/bin/chromedriver" -jar /usr/local/bin/selenium-server-standalone.jar
 	
 # Lighthouse
-RUN apk add --no-cache \
-    chromium \
-    xvfb \
-    && npm i -g lighthouse
+#RUN apt-get update && apt-get install -y \
+#    xvfb \
+#    && npm i -g lighthouse
 
-# Configure php extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-
-# Install php extensions
-RUN docker-php-ext-install \
-    bcmath \
-    calendar \
-    curl \
-    exif \
-    gd \
-    iconv \
-    intl \
-    mbstring \
-    pdo \
-    pdo_mysql \
-    pdo_pgsql \
-    pgsql \
-    pdo_sqlite \
-    pcntl \
-    tokenizer \
-    xml \
-	sockets \
-    zip
-	
-# Install wkhtmltopdf
-RUN apk add --update --no-cache \
-    libgcc libstdc++ libx11 glib libxrender libxext libintl \
-    ttf-dejavu ttf-droid ttf-freefont ttf-liberation ttf-ubuntu-font-family
-	
-COPY --from=madnight/alpine-wkhtmltopdf-builder:0.12.5-alpine3.10-606718795 \
-    /bin/wkhtmltopdf /bin/wkhtmltopdf
-
-# Install composer
-ENV COMPOSER_HOME /composer
-ENV PATH ./vendor/bin:/composer/vendor/bin:$PATH
-ENV COMPOSER_ALLOW_SUPERUSER 1
-RUN curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+# wkhtmltopdf for ubuntu
+RUN curl "https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.focal_amd64.deb" -L -o "wkhtmltopdf.deb"
+RUN apt-get update && apt-get install -y fontconfig xfonts-75dpi xfonts-base
+RUN dpkg -i wkhtmltopdf.deb
 
 # Install PHP_CodeSniffer
 RUN composer global require "squizlabs/php_codesniffer=*"
 
-# Cleanup dev dependencies
-RUN apk del -f .build-deps \
-	&& mkdir -p /run/postgresql/ \
-	&& chown -R postgres:postgres /run/postgresql/
+# Install postgresql 12
+RUN apt-get update && apt-get -y install postgresql-12 postgresql-client-12
 
 # Setup working directory
 WORKDIR /var/www
 
 USER postgres
 
-RUN mkdir -p /var/lib/postgresql/data &&\
-	chmod 0700 /var/lib/postgresql/data &&\
-	initdb /var/lib/postgresql/data &&\
-	echo "host all  all    127.0.0.1/32  md5" >> /var/lib/postgresql/data/pg_hba.conf &&\
-    echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf &&\
-    pg_ctl start -D /var/lib/postgresql/data &&\
-    psql --command "CREATE USER homestead WITH SUPERUSER PASSWORD 'secret';" &&\
+RUN pg_ctlcluster 12 main start && pg_ctlcluster 12 main status && \
+    psql --command "CREATE USER homestead WITH SUPERUSER PASSWORD 'secret';" && \
     createdb -O homestead neho_test
+
+RUN echo "host all  all    127.0.0.1/32  md5" >> /etc/postgresql/12/main/pg_hba.conf && \
+    echo "listen_addresses='*'" >> /etc/postgresql/12/main/postgresql.conf
 	
 USER root
+
+#ENTRYPOINT ["/bin/bash", "-c", "service postgresql start && service postgresql status && java -Dwebdriver.chrome.driver=/usr/bin/chromedriver -jar /usr/local/bin/selenium-sver-standalone.jar && sleep infinity"]
+ENTRYPOINT ["/bin/bash", "-c", "service postgresql start && service postgresql status && sleep infinity"]
