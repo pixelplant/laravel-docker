@@ -40,13 +40,11 @@ RUN apk add --no-cache \
 
 # Install PECL and PEAR extensions
 RUN pecl install \
-    imagick \
-    xdebug
+    imagick
 
 # Enable PECL and PEAR extensions
 RUN docker-php-ext-enable \
-    imagick \
-    xdebug
+    imagick 
 	
 # Install Selenium
 RUN apk add openjdk11
