@@ -93,4 +93,4 @@ RUN echo "host all  all    127.0.0.1/32  md5" >> /etc/postgresql/12/main/pg_hba.
 USER root
 
 #ENTRYPOINT ["/bin/bash", "-c", "service postgresql start && service postgresql status && java -Dwebdriver.chrome.driver=/usr/bin/chromedriver -jar /usr/local/bin/selenium-sver-standalone.jar && sleep infinity"]
-ENTRYPOINT ["/bin/bash", "-c", "service postgresql start && service postgresql status && sleep infinity"]
+#ENTRYPOINT ["/bin/bash", "-c", "service postgresql start && service postgresql status && sleep infinity"]
