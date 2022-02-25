@@ -15,6 +15,7 @@ RUN apt-get update \
 		libwebp-dev \
 		libxml2-dev \
 		libzip-dev \
+        rsync \
 		acl \
 		cron \
 		git \
@@ -73,7 +74,7 @@ RUN apt-get update && apt-get install -y fontconfig xfonts-75dpi xfonts-base
 RUN dpkg -i wkhtmltopdf.deb
 
 # Install PHP_CodeSniffer
-RUN composer global require "squizlabs/php_codesniffer=*"
+RUN apt-get install -y php-codesniffer
 
 # Install postgresql 12
 RUN apt-get update && apt-get -y install postgresql-12 postgresql-client-12
