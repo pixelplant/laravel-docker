@@ -47,8 +47,13 @@ RUN curl -sS https://getcomposer.org/installer | php \
 	&& composer self-update        
 
 # Enable PECL and PEAR extensions
+<<<<<<< HEAD
 #RUN docker-php-ext-enable \
 #    imagick
+=======
+RUN docker-php-ext-enable \
+    imagick 
+>>>>>>> ce603a0641529def1f3a19e6abea57af749a5ea3
 	
 # Install Selenium
 RUN apt-get update && apt-get install -y default-jre
