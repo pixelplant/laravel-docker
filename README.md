@@ -1,7 +1,7 @@
 # laravel-docker
 🐳 Generic docker image for Laravel Applications
 
-[![Docker Badge](https://img.shields.io/docker/image-size/pixelplant/laravel-docker/latest](https://hub.docker.com/r/pixelplant/laravel-docker)
+[![Docker Badge](https://img.shields.io/docker/image-size/pixelplant/laravel-docker/latest)](https://hub.docker.com/r/pixelplant/laravel-docker)
 
 
 | Tags | PHP version | Features |
