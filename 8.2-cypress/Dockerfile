@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y software-properties-common && add-apt-r
 
 RUN apt-get update && apt-get install -y \
   openssl \
-  php8.1
+  php8.2
 
 RUN apt-get update \
   && apt-get install -y -f apt-transport-https \
@@ -33,27 +33,34 @@ RUN apt-get update \
         libasound2 \
         libxtst6 \
         xauth \
-        xvfb
+        xvfb \
+        python3 \
+        python3-pip \
+        ipython3
+
+RUN pip install numpy
+RUN pip install scipy
+RUN pip install pandas
 
 # Install node 16 and npm 8
 RUN curl -s https://deb.nodesource.com/setup_16.x | bash && apt-get install nodejs -y
 
 RUN apt-get update && apt-get install -y \
-        php8.1-bcmath \
-        php8.1-calendar \
-        php8.1-curl \
-        php8.1-exif \
-        php8.1-gd \
-        php8.1-iconv \
-        php8.1-intl \
-        php8.1-mbstring \
-        php8.1-pdo \
-        php8.1-pdo-pgsql \
-        php8.1-pgsql \
-        php8.1-tokenizer \
-        php8.1-xml \
-        php8.1-sockets \
-        php8.1-zip
+        php8.2-bcmath \
+        php8.2-calendar \
+        php8.2-curl \
+        php8.2-exif \
+        php8.2-gd \
+        php8.2-iconv \
+        php8.2-intl \
+        php8.2-mbstring \
+        php8.2-pdo \
+        php8.2-pdo-pgsql \
+        php8.2-pgsql \
+        php8.2-tokenizer \
+        php8.2-xml \
+        php8.2-sockets \
+        php8.2-zip
 
 RUN curl -sS https://getcomposer.org/installer | php \
 	&& mv composer.phar /usr/local/bin/composer \
