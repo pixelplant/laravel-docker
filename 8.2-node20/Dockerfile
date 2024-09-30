@@ -43,7 +43,8 @@ RUN apt-get update && apt-get install -y \
         php8.2-tokenizer \
         php8.2-xml \
         php8.2-sockets \
-        php8.2-zip
+        php8.2-zip \
+        php8.2-imagick
 
 RUN curl -sS https://getcomposer.org/installer | php \
 	&& mv composer.phar /usr/local/bin/composer \
