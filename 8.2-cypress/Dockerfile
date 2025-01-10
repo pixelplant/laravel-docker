@@ -36,7 +36,8 @@ RUN apt-get update \
         xvfb \
         python3 \
         python3-pip \
-        ipython3
+        ipython3 \
+        php8.2-imagick
 
 RUN pip install numpy
 RUN pip install scipy
