@@ -86,20 +86,22 @@ RUN dpkg -i wkhtmltopdf.deb
 # Install PHP_CodeSniffer
 RUN apt-get install -y php-codesniffer
 
-# Install postgresql 12
-RUN apt-get update && apt-get -y install postgresql-12 postgresql-client-12
+# Install postgresql 16
+RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+RUN curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+RUN apt-get update && apt-get -y install postgresql-16 postgresql-client-16
 
 # Setup working directory
 WORKDIR /var/www
 
 USER postgres
 
-RUN pg_ctlcluster 12 main start && pg_ctlcluster 12 main status && \
+RUN pg_ctlcluster 16 main start && pg_ctlcluster 16 main status && \
     psql --command "CREATE USER homestead WITH SUPERUSER PASSWORD 'secret';" && \
     createdb -O homestead neho_test
 
-RUN echo "host all  all    127.0.0.1/32  md5" >> /etc/postgresql/12/main/pg_hba.conf && \
-    echo "listen_addresses='*'" >> /etc/postgresql/12/main/postgresql.conf
+RUN echo "host all  all    127.0.0.1/32  md5" >> /etc/postgresql/16/main/pg_hba.conf && \
+    echo "listen_addresses='*'" >> /etc/postgresql/16/main/postgresql.conf
 
 USER root
 
