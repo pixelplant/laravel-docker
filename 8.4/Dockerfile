@@ -1,10 +1,11 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y software-properties-common && add-apt-repository ppa:ondrej/php
 
 RUN apt-get update && apt-get install -y \
   openssl \
-  php8.2
+  php8.4
 
 RUN apt-get update \
   && apt-get install -y -f apt-transport-https \
@@ -25,26 +26,26 @@ RUN apt-get update \
         curl \
         libcurl4-openssl-dev
 
-# Install node 16 and npm 8
+# Install node 20
 RUN curl -s https://deb.nodesource.com/setup_20.x | bash && apt-get install nodejs -y
 
 RUN apt-get update && apt-get install -y \
-        php8.2-bcmath \
-        php8.2-calendar \
-        php8.2-curl \
-        php8.2-exif \
-        php8.2-gd \
-        php8.2-iconv \
-        php8.2-intl \
-        php8.2-mbstring \
-        php8.2-pdo \
-        php8.2-pdo-pgsql \
-        php8.2-pgsql \
-        php8.2-tokenizer \
-        php8.2-xml \
-        php8.2-sockets \
-        php8.2-zip \
-        php8.2-imagick
+        php8.4-bcmath \
+        php8.4-calendar \
+        php8.4-curl \
+        php8.4-exif \
+        php8.4-gd \
+        php8.4-iconv \
+        php8.4-intl \
+        php8.4-mbstring \
+        php8.4-pdo \
+        php8.4-pdo-pgsql \
+        php8.4-pgsql \
+        php8.4-tokenizer \
+        php8.4-xml \
+        php8.4-sockets \
+        php8.4-zip \
+        php8.4-imagick
 
 RUN curl -sS https://getcomposer.org/installer | php \
 	&& mv composer.phar /usr/local/bin/composer \
@@ -56,22 +57,10 @@ RUN apt-get install -y openvpn
 #RUN docker-php-ext-enable \
 #    imagick
 
-# Install Selenium
-# RUN apt-get update && apt-get install -y default-jre
-# RUN apt-get update && apt-get install -y chromium-driver wget
-
-# #RUN npm install chromedriver
-# RUN wget https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar \
-# 	&& mv -f selenium-server-standalone-3.141.59.jar /usr/local/bin/selenium-server-standalone.jar \
-# 	&& chown root:root /usr/local/bin/selenium-server-standalone.jar \
-# 	&& chmod 0755 /usr/local/bin/selenium-server-standalone.jar
-
 # Install Chrome
 RUN apt-get install -y wget
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN apt install -y ./google-chrome-stable_current_amd64.deb
-
-#java -Dwebdriver.chrome.driver="/usr/bin/chromedriver" -jar /usr/local/bin/selenium-server-standalone.jar
 
 # Lighthouse
 #RUN apt-get update && apt-get install -y \
@@ -79,9 +68,7 @@ RUN apt install -y ./google-chrome-stable_current_amd64.deb
 #    && npm i -g lighthouse
 
 # wkhtmltopdf for ubuntu
-RUN curl "https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.focal_amd64.deb" -L -o "wkhtmltopdf.deb"
-RUN apt-get update && apt-get install -y fontconfig xfonts-75dpi xfonts-base
-RUN dpkg -i wkhtmltopdf.deb
+RUN apt-get update && apt-get -y install wkhtmltopdf && ln -s /usr/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 
 # Install PHP_CodeSniffer
 RUN apt-get install -y php-codesniffer
@@ -105,5 +92,4 @@ RUN echo "host all  all    127.0.0.1/32  md5" >> /etc/postgresql/16/main/pg_hba.
 
 USER root
 
-#ENTRYPOINT ["/bin/bash", "-c", "service postgresql start && service postgresql status && java -Dwebdriver.chrome.driver=/usr/bin/chromedriver -jar /usr/local/bin/selenium-sver-standalone.jar && sleep infinity"]
 #ENTRYPOINT ["/bin/bash", "-c", "service postgresql start && service postgresql status && sleep infinity"]
