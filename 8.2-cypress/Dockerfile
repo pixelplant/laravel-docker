@@ -1,13 +1,13 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y software-properties-common && add-apt-repository ppa:ondrej/php
 
-RUN apt-get update && apt-get install -y \
-  openssl \
-  php8.2
+RUN apt update && \
+    apt upgrade -y && \
+    apt-get install -y openssl php8.2
 
-RUN apt-get update \
-  && apt-get install -y -f apt-transport-https \
+RUN apt-get install -y -f apt-transport-https \
 		libicu-dev \
 		libjpeg-dev \
 		libfreetype6-dev \
@@ -74,9 +74,7 @@ RUN apt install -y ./google-chrome-stable_current_amd64.deb
 
 
 # wkhtmltopdf for ubuntu
-RUN curl "https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.focal_amd64.deb" -L -o "wkhtmltopdf.deb"
-RUN apt-get update && apt-get install -y fontconfig xfonts-75dpi xfonts-base
-RUN dpkg -i wkhtmltopdf.deb
+RUN apt-get update && apt-get -y install wkhtmltopdf && ln -s /usr/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 
 # Install PHP_CodeSniffer
 RUN apt-get install -y php-codesniffer
