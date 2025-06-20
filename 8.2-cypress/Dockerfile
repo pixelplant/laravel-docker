@@ -44,7 +44,7 @@ RUN pip install scipy
 RUN pip install pandas
 
 # Install node 16 and npm 8
-RUN curl -s https://deb.nodesource.com/setup_16.x | bash && apt-get install nodejs -y
+RUN curl -s https://deb.nodesource.com/setup_20.x | bash && apt-get install nodejs -y
 
 RUN apt-get update && apt-get install -y \
         php8.2-bcmath \
