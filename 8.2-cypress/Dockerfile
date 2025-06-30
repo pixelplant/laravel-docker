@@ -39,7 +39,7 @@ RUN apt-get install -y -f apt-transport-https \
         ipython3 \
         php8.2-imagick
 
-RUN pip install numpy
+RUN pip install numpy==1.25.0
 RUN pip install scipy
 RUN pip install pandas
 
