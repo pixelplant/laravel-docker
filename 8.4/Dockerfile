@@ -67,6 +67,10 @@ RUN apt install -y ./google-chrome-stable_current_amd64.deb
 #    xvfb \
 #    && npm i -g lighthouse
 
+# Install Chrome headless shell
+RUN wget https://storage.googleapis.com/chrome-for-testing-public/142.0.7444.6/linux64/chrome-headless-shell-linux64.zip
+RUN unzip chrome-headless-shell-linux64.zip
+
 # wkhtmltopdf for ubuntu
 RUN apt-get update && apt-get -y install wkhtmltopdf && ln -s /usr/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
 
