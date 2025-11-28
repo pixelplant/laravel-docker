@@ -51,6 +51,8 @@ RUN curl -sS https://getcomposer.org/installer | php \
 	&& mv composer.phar /usr/local/bin/composer \
 	&& composer self-update
 
+RUN npm install -g pnpm
+
 RUN apt-get install -y openvpn
 
 # Enable PECL and PEAR extensions
