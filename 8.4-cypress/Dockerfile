@@ -67,6 +67,8 @@ RUN curl -sS https://getcomposer.org/installer | php \
 	&& mv composer.phar /usr/local/bin/composer \
 	&& composer self-update
 
+RUN npm install -g pnpm
+
 # Install Chrome
 RUN apt-get install -y wget
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
